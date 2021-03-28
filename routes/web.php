@@ -1,5 +1,8 @@
 <?php
 
+use App\Aluno;
+use DebugBar\DebugBar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +19,25 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/db', function () {
+    $alunos = DB::table('alunos as a')
+        ->leftJoin('aluno_turmas as at', 'at.aluno_id', 'a.id')
+        ->get();
+
+    return view('welcome.alunos')
+        ->with(compact('alunos'));
+});
+
+Route::get('/eloquent', function () {
+
+    $alunos = DB::table('alunos as a')
+        ->leftJoin('aluno_turmas as at', 'at.aluno_id', 'a.id')
+        ->get();
+    $alunos = Aluno::with('turmas')
+        ->get();
+
+    return view('welcome.alunos')
+        ->with(compact('alunos'));
+});
+
